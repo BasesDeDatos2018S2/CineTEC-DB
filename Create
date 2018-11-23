@@ -1,0 +1,130 @@
+
+
+Create Table Movie_Clasification(
+	Id					SERIAL			NOT NULL,
+	Clasification		VARCHAR(30)		NOT NULL,
+	Description			VARCHAR(30)		NOT NULL,
+	Primary Key(Id)
+);
+
+Create Table Movie(
+	Id					SERIAL			NOT NULL,
+	Billboard_status	BOOLEAN			NOT NULL,
+	Original_name		VARCHAR(30)		NOT NULL,
+	Traduced_name		VARCHAR(30)		NOT NULL,
+	Duration			INT				NOT NULL,
+	Director			VARCHAR(30)		NOT NULL,
+	Id_clasification	INT		NOT NULL,
+	Image				VARCHAR(500)	NOT NULL,
+	Primary Key(Id)
+);
+
+Create Table Movie_Theater(
+	Id					SERIAL			NOT NULL,
+	Name				VARCHAR(30)		NOT NULL,
+	Ubication			VARCHAR(30)		NOT NULL,
+	Primary Key(Id)
+);
+
+
+Create Table Movie_Room(
+	Id					SERIAL			NOT NULL,
+	Capacity			INT 			NOT NULL,
+	Id_movie_theater	INT 			NOT NULL,
+	Primary Key(Id)
+);
+
+Create Table Projection(
+	Id					SERIAL			NOT NULL,
+	Hour				TIME			NOT NULL,
+	Date				DATE			NOT NULL,
+	Price				INT				NOT NULL,
+	Id_movie			INT				NOT NULL,
+	Id_movie_room		INT 			NOT NULL,
+	Primary Key(Id)
+);
+
+
+Create Table Actors(
+	Id					SERIAL			NOT NULL,
+	Name				VARCHAR(30)		NOT NULL,
+	Lastname			VARCHAR(30)		NOT NULL,
+	Primary Key(Id)
+);
+
+
+Create Table Actors_Movie(
+	Id_actor			INT			NOT NULL,
+	Id_movie			INT			NOT NULL,
+	Primary Key(Id_actor, Id_movie)
+);
+
+
+Create Table Seat(
+	Id					SERIAL			NOT NULL,
+	Rows				INT 			NOT NULL,
+	Columns				INT 			NOT NULL,
+	Id_movie_room		INT 			NOT NULL,
+	Primary Key(Id)
+);
+
+Create Table Seat_Reservation(
+	Id					SERIAL			NOT NULL,
+	Status				INT				NOT NULL,
+	Id_seat				INT 			NOT NULL,
+	Id_projection		INT 			NOT NULL,
+	Id_bill				INT 			NOT NULL,
+	Primary Key(Id)
+);
+
+
+Create Table Bill(
+	Id					SERIAL			NOT NULL,
+	Date				DATE			NOT NULL,
+	Quantity			INT 			NOT NULL,
+	Id_client			INT 			NOT NULL,
+	Id_projection		INT				NOT NULL,
+	Primary Key(Id)	
+);
+
+
+
+ALTER TABLE Movie
+ADD FOREIGN KEY (Id_clasification) REFERENCES Movie_Clasification(Id);
+
+ALTER TABLE Projection
+ADD FOREIGN KEY (Id_movie) REFERENCES Movie(Id),
+ADD	FOREIGN KEY (Id_movie_room) REFERENCES Movie_Room(Id),
+ADD	CONSTRAINT check_price CHECK (Price > 0),
+ADD CONSTRAINT check_rooms UNIQUE (Hour, Date, Id_movie_room);
+
+
+ALTER TABLE Actors_Movie
+ADD FOREIGN KEY (Id_actor) REFERENCES Actors(Id),
+ADD FOREIGN KEY (Id_movie) REFERENCES Movie(Id);
+
+
+ALTER TABLE Movie_Room
+ADD FOREIGN KEY (Id_movie_theater) REFERENCES Movie_Theater(Id);
+
+
+ALTER TABLE Seat
+ADD FOREIGN KEY (Id_movie_room) REFERENCES Movie_Room(Id),
+ADD	CONSTRAINT check_row CHECK (Rows > 0),
+ADD	CONSTRAINT check_column CHECK (Columns > 0);
+
+
+ALTER TABLE Seat_Reservation
+ADD FOREIGN KEY (Id_seat) REFERENCES Seat(Id),
+ADD FOREIGN KEY (Id_projection) REFERENCES Projection(Id),
+ADD FOREIGN KEY (Id_bill) REFERENCES Bill(Id),
+ADD CONSTRAINT check_reservation UNIQUE (Id_seat, Id_projection);
+
+
+ALTER TABLE Bill
+ADD FOREIGN KEY (Id_projection) REFERENCES Projection(Id),
+ADD	CONSTRAINT check_quantity CHECK (Quantity > 0),
+ADD	CONSTRAINT check_id CHECK (Id_client >= 1);
+
+
+
