@@ -29,6 +29,7 @@ Create Table Movie_Theater(
 
 Create Table Movie_Room(
 	Id					SERIAL			NOT NULL,
+	Name				VARCHAR(30)		NOT NULL,
 	Capacity			INT 			NOT NULL,
 	Id_movie_theater	INT 			NOT NULL,
 	Primary Key(Id)
@@ -125,6 +126,8 @@ ALTER TABLE Bill
 ADD FOREIGN KEY (Id_projection) REFERENCES Projection(Id),
 ADD	CONSTRAINT check_quantity CHECK (Quantity > 0),
 ADD	CONSTRAINT check_id CHECK (Id_client >= 1);
+
+
 
 
 

@@ -1,17 +1,57 @@
 --STORED PROCEDURES
 
 --STORED PROCEDURE BILLS
-CREATE FUNCTION usp_bills(a integer)
-RETURNS TABLE(Id_Bill INT, Date_Bill DATE, Quantity_Tikets INT, Id_client INT, Hour_Movie TIME, Date_Movie DATE, Movie_Price INT, Name_Movie VARCHAR, Total_Price INT)
+CREATE FUNCTION usp_bills(id_bill integer)
+RETURNS TABLE(Id_Bill INT, Date_Bill DATE, Quantity_Tikets INT, Id_client INT, Hour_Movie TIME, Date_Movie DATE, Movie_Price INT, Name_Original_Movie VARCHAR, Name_Traduced_Movie VARCHAR, Total_Price INT)
 LANGUAGE SQL
 AS $$
-	SELECT B.Id, B.Date, B.Quantity, B.Id_client, P.Hour, P.Date, P.Price, M.Original_name, (B.Quantity * P.Price)
+	SELECT B.Id, B.Date, B.Quantity, B.Id_client, P.Hour, P.Date, P.Price, M.Original_name, M.Traduced_name, (B.Quantity * P.Price)
 	FROM Bill AS B
 		INNER JOIN Projection AS P ON P.Id = B.Id_projection
 		INNER JOIN Movie AS M ON M.Id = P.Id_movie
-	WHERE a = B.Id
+	WHERE id_bill = B.Id
 $$;
 
+--Drop Function usp_bills
+--Select * from usp_bills(1)
 
-Drop Function usp_bills
-Select * from usp_bills(1)
+
+--STORED PROCEDURE MOVIES PER CINE THEATER
+CREATE FUNCTION usp_movie_per_theater(id_theater integer)
+RETURNS TABLE(Room_Name VARCHAR, Room_Capacity INT, Movie_Name VARCHAR, Movie_duration INT, Movie_Price INT, Projection_hour TIME, Projection_date DATE)
+LANGUAGE SQL
+AS $$
+	SELECT MR.Name, MR.Capacity, M.Original_Name, M.Duration, P.Price, P.Hour, P.Date
+	FROM Movie_Room AS MR
+		INNER JOIN Projection AS P ON P.Id_movie_room = MR.Id
+		INNER JOIN Movie AS M ON M.Id = P.Id_movie
+	WHERE MR.Id_movie_theater = id_theater and M.Billboard_status = TRUE
+$$;
+	
+--Drop Function usp_movie_per_theater
+--Select * from usp_movie_per_theater(1)
+
+
+--STORED PROCEDURE SEATS OF A PROJECTION
+CREATE FUNCTION usp_seats_projection(projection integer)
+RETURNS TABLE(Seats_id INT, Seat_row INT, Seat_column INT)
+LANGUAGE SQL
+AS $$
+	SELECT SR.Id_Seat, S.Rows, S.Columns
+	FROM Seat_Reservation AS SR
+	INNER JOIN Projection AS P ON P.Id = SR.Id_projection
+	INNER JOIN Seat AS S ON S.Id = SR.Id_seat 
+	WHERE SR.Id_projection = projection
+$$;
+--Drop Function usp_seats_projection
+--Select * from usp_seats_projection(1)
+
+Select * from Seat
+
+
+
+
+
+
+
+

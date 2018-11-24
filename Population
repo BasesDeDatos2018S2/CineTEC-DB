@@ -26,13 +26,13 @@ INSERT INTO Movie_Theater(Name, Ubication) VALUES
 ('Cinepolis', 'Paseo Metrópoli');
 
 
-INSERT INTO Movie_Room(Capacity, Id_movie_theater) VALUES
-(40, 1),
-(60, 1),
-(40, 2),
-(60, 2),
-(40, 3),
-(60, 3);
+INSERT INTO Movie_Room(Capacity, Name, Id_movie_theater) VALUES
+(40, 'Sala 1-A' ,1),
+(60, 'Sala 2-A' ,1),
+(40, 'Sala 1-B' ,2),
+(60, 'Sala 2-B' ,2),
+(40, 'Sala 1-C' ,3),
+(60, 'Sala 2-C' ,3);
 
 
 INSERT INTO Projection (Hour, Date, Price, Id_movie, Id_movie_room) VALUES		
@@ -562,7 +562,6 @@ INSERT INTO Seat_Reservation(Status, Id_seat, Id_projection, Id_bilL) VALUES
 (3, 231, 12, 12),
 (3, 232, 12, 12),
 (3, 233, 12, 12);
-
 
 
 
