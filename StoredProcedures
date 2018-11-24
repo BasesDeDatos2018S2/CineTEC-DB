@@ -1,6 +1,7 @@
 --STORED PROCEDURES
-
+----------------------------------------------------------------------------------------------
 --STORED PROCEDURE BILLS
+----------------------------------------------------------------------------------------------
 CREATE FUNCTION usp_bills(id_bill integer)
 RETURNS TABLE(Id_Bill INT, Date_Bill DATE, Quantity_Tikets INT, Id_client INT, Hour_Movie TIME, Date_Movie DATE, Movie_Price INT, Name_Original_Movie VARCHAR, Name_Traduced_Movie VARCHAR, Total_Price INT)
 LANGUAGE SQL
@@ -15,8 +16,9 @@ $$;
 --Drop Function usp_bills
 --Select * from usp_bills(1)
 
-
---STORED PROCEDURE MOVIES PER CINE THEATER
+----------------------------------------------------------------------------------------------
+--STORED PROCEDURE MOVIES PER CINE 
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 CREATE FUNCTION usp_movie_per_theater(id_theater integer)
 RETURNS TABLE(Room_Name VARCHAR, Room_Capacity INT, Movie_Name VARCHAR, Movie_duration INT, Movie_Price INT, Projection_hour TIME, Projection_date DATE)
 LANGUAGE SQL
@@ -31,8 +33,9 @@ $$;
 --Drop Function usp_movie_per_theater
 --Select * from usp_movie_per_theater(1)
 
-
+----------------------------------------------------------------------------------------------
 --STORED PROCEDURE SEATS OF A PROJECTION
+----------------------------------------------------------------------------------------------
 CREATE FUNCTION usp_seats_projection(projection integer)
 RETURNS TABLE(Seats_id INT, Seat_row INT, Seat_column INT)
 LANGUAGE SQL
@@ -46,12 +49,36 @@ $$;
 --Drop Function usp_seats_projection
 --Select * from usp_seats_projection(1)
 
-Select * from Seat
 
+----------------------------------------------------------------------------------------------
+--STORED PROCEDURE ACTORS PER MOVIE
+----------------------------------------------------------------------------------------------
+CREATE FUNCTION usp_actors_movie(movie integer)
+RETURNS TABLE(Name VARCHAR, Lastname VARCHAR)
+LANGUAGE SQL
+AS $$
+	SELECT A.Name, A.Lastname
+	FROM Movie as M
+	INNER JOIN Actors_Movie AS AM ON AM.Id_movie = M.Id
+	INNER JOIN Actors as A ON A.Id = AM.Id_actor
+	WHERE M.Id = movie
+$$;
+--Drop Function usp_actors_movie
+--Select * from usp_actors_movie(1)
 
-
-
-
-
+----------------------------------------------------------------------------------------------
+--STORED PROCEDURE MOVIE
+----------------------------------------------------------------------------------------------
+CREATE FUNCTION usp_movie()
+RETURNS TABLE(Id INT, Billboard_status BOOLEAN, Original_name VARCHAR, Traduced_name VARCHAR, Duration INT, Director VARCHAR, Clasification VARCHAR, Image VARCHAR)
+LANGUAGE SQL
+AS $$
+	SELECT M.Id, M.Billboard_status, M.Original_name, M.Traduced_name, M.Duration, M.Director, MC.Clasification, M.Image
+	FROM Movie as M
+	INNER JOIN Movie_Clasification AS MC ON MC.Id = M.Id_clasification
+	ORDER BY M.Id
+$$;
+--Drop Function usp_movie
+--Select * from usp_movie()
 
 
