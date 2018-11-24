@@ -1,4 +1,6 @@
-
+SET datestyle = dmy;
+ 
+ 
 INSERT INTO Movie_Clasification (Clasification, Description) VALUES
 ('G', 'General Audiences'),
 ('PG', 'Parental Guidance Suggested'),

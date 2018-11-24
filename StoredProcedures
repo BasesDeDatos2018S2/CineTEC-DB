@@ -1,0 +1,17 @@
+--STORED PROCEDURES
+
+--STORED PROCEDURE BILLS
+CREATE FUNCTION usp_bills(a integer)
+RETURNS TABLE(Id_Bill INT, Date_Bill DATE, Quantity_Tikets INT, Id_client INT, Hour_Movie TIME, Date_Movie DATE, Movie_Price INT, Name_Movie VARCHAR, Total_Price INT)
+LANGUAGE SQL
+AS $$
+	SELECT B.Id, B.Date, B.Quantity, B.Id_client, P.Hour, P.Date, P.Price, M.Original_name, (B.Quantity * P.Price)
+	FROM Bill AS B
+		INNER JOIN Projection AS P ON P.Id = B.Id_projection
+		INNER JOIN Movie AS M ON M.Id = P.Id_movie
+	WHERE a = B.Id
+$$;
+
+
+Drop Function usp_bills
+Select * from usp_bills(1)
