@@ -81,4 +81,21 @@ $$;
 --Drop Function usp_movie
 --Select * from usp_movie()
 
+----------------------------------------------------------------------------------------------
+--STORED PROCEDURE SCREENING
+----------------------------------------------------------------------------------------------
+CREATE FUNCTION usp_screening_with_cinema(IDF INTEGER)
+RETURNS TABLE(NAME VARCHAR, ROOM VARCHAR, HOUR TIME, DATE DATE, PRICE INT)
+LANGUAGE SQL
+AS $$
+	SELECT M.ORIGINAL_NAME, MR.NAME, S.HOUR, S.DATE, S.PRICE
+	FROM PROJECTION AS S 
+	INNER JOIN MOVIE AS M ON M.ID = S.ID_MOVIE
+	INNER JOIN MOVIE_ROOM AS MR ON MR.ID = S.ID_MOVIE_ROOM
+	WHERE S.ID = IDF
+$$;
+--Drop Function usp_screening_with_cinema()
+--Select * from usp_screening_with_cinema(ID)
+--Select * from usp_screening_with_cinema(1)
+
 
