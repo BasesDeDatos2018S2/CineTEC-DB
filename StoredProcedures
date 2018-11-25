@@ -285,6 +285,27 @@ $$;
 		 
 --Select * from usp_seat1(1,2,1,1)
 --Drop Function usp_seat1
+		 
+		 ----------------------------------------------------------------------------------------------
+--STORE PROCEDURE BILL CREATOR 2
+----------------------------------------------------------------------------------------------
+CREATE FUNCTION usp_billcreator2(quantity integer, id_client integer, id_projection integer)
+RETURNS VOID  
+LANGUAGE SQL
+AS $$
+	INSERT INTO Bill(Date, Quantity, Id_client, Id_projection) VALUES
+	((SELECT CURRENT_DATE, Quantity, Id_client, Id_projection))
+
+$$;
+		 
+--Select * from usp_billcreator2(5,6,1)
+--Drop Function usp_seat1
+	 
+----------------------------------------------------------------------------------------------
+--STORE PROCEDURE BILL CREATOR 3
+----------------------------------------------------------------------------------------------
+CREATE FUNCTION usp_billcreator3(quantity integer, id_client integer, id_projection integer)
+RETURNS TABLE (Id_bill INT) 
 
 		
 
