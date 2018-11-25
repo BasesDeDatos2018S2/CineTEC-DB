@@ -1,4 +1,3 @@
-SET timezone TO 'UTC'
 
 Create Table Movie_Clasification(
 	Id					SERIAL			NOT NULL,
