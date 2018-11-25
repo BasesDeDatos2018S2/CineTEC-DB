@@ -19,19 +19,21 @@ $$;
 ----------------------------------------------------------------------------------------------
 --STORED PROCEDURE MOVIES PER CINE 
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-CREATE FUNCTION usp_movie_per_theater(id_theater integer)
-RETURNS TABLE(Room_Name VARCHAR, Room_Capacity INT, Movie_Name VARCHAR, Movie_duration INT, Movie_Price INT, Projection_hour TIME, Projection_date DATE)
+CREATE FUNCTION usp_movie_per_theater(movie_theater integer)
+RETURNS TABLE(Id INT, Billboard_status BOOLEAN, Original_name VARCHAR, Traduced_name VARCHAR, Duration INT, Director VARCHAR, Clasification VARCHAR, Image VARCHAR)
 LANGUAGE SQL
 AS $$
-	SELECT MR.Name, MR.Capacity, M.Original_Name, M.Duration, P.Price, P.Hour, P.Date
-	FROM Movie_Room AS MR
-		INNER JOIN Projection AS P ON P.Id_movie_room = MR.Id
-		INNER JOIN Movie AS M ON M.Id = P.Id_movie
-	WHERE MR.Id_movie_theater = id_theater and M.Billboard_status = TRUE
+	SELECT DISTINCT M.Id, M.Billboard_status, M.Original_name, M.Traduced_name, M.Duration, M.Director, MC.Clasification, M.Image
+	FROM Movie as M
+		INNER JOIN Movie_Clasification AS MC ON MC.Id = M.Id_clasification
+		INNER JOIN Projection AS P ON P.Id_movie_room = M.Id
+		INNER JOIN Movie_Room AS MR ON MR.Id = P.Id_movie_room
+		INNER JOIN Movie_Theater as MT ON MT.Id = MR.Id_movie_theater
+	Where (MT.Id = movie_theater) AND (M.Billboard_status = TRUE) 
 $$;
-	
 --Drop Function usp_movie_per_theater
 --Select * from usp_movie_per_theater(1)
+
 
 ----------------------------------------------------------------------------------------------
 --STORED PROCEDURE SEATS OF A PROJECTION
@@ -54,10 +56,10 @@ $$;
 --STORED PROCEDURE ACTORS PER MOVIE
 ----------------------------------------------------------------------------------------------
 CREATE FUNCTION usp_actors_movie(movie integer)
-RETURNS TABLE(Name VARCHAR, Lastname VARCHAR)
+RETURNS TABLE(Id INT, Name VARCHAR, Lastname VARCHAR)
 LANGUAGE SQL
 AS $$
-	SELECT A.Name, A.Lastname
+	SELECT A.Id, A.Name, A.Lastname
 	FROM Movie as M
 	INNER JOIN Actors_Movie AS AM ON AM.Id_movie = M.Id
 	INNER JOIN Actors as A ON A.Id = AM.Id_actor
@@ -81,4 +83,34 @@ $$;
 --Drop Function usp_movie
 --Select * from usp_movie()
 
+----------------------------------------------------------------------------------------------
+--STORED PROCEDURE MOVIE_ROOMS
+----------------------------------------------------------------------------------------------
+CREATE FUNCTION usp_movie_room(movie_theater integer)
+RETURNS TABLE(Id INT, Name VARCHAR, Capacity INT)
+LANGUAGE SQL
+AS $$
+	SELECT MR.Id, MR.Name, MR.Capacity
+	FROM Movie_Theater as MT
+	INNER JOIN Movie_room AS MR ON MR.Id_movie_theater = MT.Id
+	WHERE MT.Id = movie_theater
+$$;
+--Drop Function usp_movie_room
+--Select * from usp_movie_room(4)
 
+----------------------------------------------------------------------------------------------
+--STORED PROCEDURE ACTIVE PROJECTIONS
+----------------------------------------------------------------------------------------------
+CREATE FUNCTION usp_active_projections(movie_id integer, movie_theater_id integer)
+RETURNS TABLE(Id_projection INT, Hour_projection TIME, Date_projection DATE, Price_projection INT, Id_movie_room INT) 
+LANGUAGE SQL
+AS $$
+	SELECT P.Id, P.Hour, P.Date, P.Price, P.Id_movie_room
+	FROM Movie_Theater AS MT
+	INNER JOIN Movie_Room AS MR ON MR.Id_movie_theater = MT.Id
+	INNER JOIN Projection AS P ON P.Id_movie_room = MR.Id
+	INNER JOIN Movie AS M ON M.Id = P.Id_movie
+	WHERE (MT.Id = movie_theater_id ) AND (M.Id = movie_id) AND ((SELECT CURRENT_DATE) >=  P.Date)
+$$;
+--Drop Function usp_active_projections
+--Select * from usp_active_projections(1,1)
