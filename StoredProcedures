@@ -254,11 +254,38 @@ AS $$
 $$;
 --Drop Function usp_make_seats_60
 --Select * from usp_make_seats_60(9)
-	
+
+----------------------------------------------------------------------------------------------
+--STORED PROCEDURE PUT SEAT AS NOT OCCUPIED
+----------------------------------------------------------------------------------------------
+CREATE FUNCTION usp_seat_occupied(rows_req integer, columns_req integer, projection_req integer)
+RETURNS TABLE (Id_silla INT)
+LANGUAGE SQL
+AS $$
+	SELECT S.Id
+	FROM SEAT AS S
+	INNER JOIN Movie_Room AS MR ON MR.Id = S.Id_movie_room
+	INNER JOIN Projection AS P ON P.Id_movie_room = MR.Id
+	WHERE (S.Rows = rows_req) AND (S.Columns = columns_req) AND (P.Id = projection_req)
+$$;
+--Drop Function usp_seat_occupied
+--Select * from usp_seat_occupied(1,2,1)
 
 
+----------------------------------------------------------------------------------------------
+--STORED PROCEDURE PUT SEAT AS NOT OCCUPIED
+----------------------------------------------------------------------------------------------
+CREATE FUNCTION usp_seat1(rows_req integer, columns_req integer, projection_req integer, bill_req integer)
+RETURNS VOID
+LANGUAGE SQL
+AS $$
+	INSERT INTO Seat_Reservation(Status, Id_seat, Id_projection, Id_bill) VALUES
+	(3, (select * from usp_seat_occupied(rows_req, columns_req, projection_req)), projection_req, bill_req)
+$$;
+		 
+--Select * from usp_seat1(1,2,1,1)
+--Drop Function usp_seat1
 
+		
 
-
-
-
+		 
