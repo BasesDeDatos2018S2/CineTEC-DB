@@ -118,10 +118,10 @@ $$;
 --STORED PROCEDURE ACTIVE PROJECTIONS
 ----------------------------------------------------------------------------------------------
 CREATE FUNCTION usp_active_projections(movie_id integer, movie_theater_id integer)
-RETURNS TABLE(Id_projection INT, Hour_projection TIME, Date_projection DATE, Price_projection INT, Id_movie_room INT) 
+RETURNS TABLE(Id_projection INT) 
 LANGUAGE SQL
 AS $$
-	SELECT P.Id, P.Hour, P.Date, P.Price, P.Id_movie_room
+	SELECT P.Id
 	FROM Movie_Theater AS MT
 	INNER JOIN Movie_Room AS MR ON MR.Id_movie_theater = MT.Id
 	INNER JOIN Projection AS P ON P.Id_movie_room = MR.Id
