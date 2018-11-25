@@ -35,7 +35,6 @@ INSERT INTO Movie_Room(Capacity, Name, Id_movie_theater) VALUES
 (40, 'Sala 1-C' ,3),
 (60, 'Sala 2-C' ,3);
 
-
 INSERT INTO Projection (Hour, Date, Price, Id_movie, Id_movie_room) VALUES		
 ('17:30', '25/11/18', 2500, 1, 1),
 ('17:30', '25/11/18', 3000, 2, 2),
@@ -563,12 +562,6 @@ INSERT INTO Seat_Reservation(Status, Id_seat, Id_projection, Id_bilL) VALUES
 (3, 231, 12, 12),
 (3, 232, 12, 12),
 (3, 233, 12, 12);
-
-
-
-
-
-
 
 
 
